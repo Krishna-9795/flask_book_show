@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BookMyShow - Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('login') }}">
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" required><br><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>BookMyShow - Movies</title>
+</head>
+<body>
+    <h1>Movies</h1>
+    <ul>
+        {% for movie in movies %}
+            <li>{{ movie }}</li>
+        {% endfor %}
+    </ul>
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+</body>
+</html>
