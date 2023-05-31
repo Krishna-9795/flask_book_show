@@ -9,13 +9,6 @@ db = mysql.connector.connect(
     user='root',
     password='root@123',
     database='bookmyshow')
-
-@app.route('/')
-def home():
-    if 'user_id' in session:
-        return redirect(url_for('movies'))
-    else:
-        return render_template('index.html')
     
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -58,13 +51,15 @@ def login():
 
 
 @app.route('/')
-def homes():
+def movies():
     # Perform database operations
     if 'user_id' in session:
         cursor = db.cursor()
         cursor.execute("SELECT * FROM movies")
         movies = cursor.fetchall()
-        return render_template('movies.html', movies=movies)
+        return {
+            "list" : movies
+        }
     else:
         return redirect(url_for('login'))
 
