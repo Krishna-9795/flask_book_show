@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy  import SQLAlchemy
 from flask_jwt_extended import JWTManager, jwt_required,create_access_token,get_jwt_identity
 from datetime import timedelta
-
+from list import movies
 app=Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI']='mysql+pymysql://root:krishna123@localhost/bookmyshows'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -55,17 +55,37 @@ def login():
         
         
 
+def search_movies_by_title(movies, search_query, page_size, page_number):
+    matching_movies = []
+    for movie in movies:
+        title = movie['title']
+        if search_query.lower() in title.lower():
+            matching_movies.append(movie)
+    
+    total_movies = len(matching_movies)
+    total_pages = (total_movies + page_size - 1) // page_size
+    
+    start_index = (page_number - 1) * page_size
+    end_index = start_index + page_size
+    paginated_movies = matching_movies[start_index:end_index]
+    
+    return paginated_movies, total_pages
+
 
 @app.route('/movies',methods=['GET'])
 @jwt_required()
 def get_movies():
     current_user_id=get_jwt_identity()
-    movies=[
-        {'id': 1, 'title': 'Ragnarock'},
-        {'id': 2, 'title': 'Beatles'},
-        {'id': 3, 'title': 'Queens'}
-    ]
-    return jsonify(movies), 200
+    
+    search = request.args.get('search')
+    page = request.args.get('page')
+    page_size = 10
+    results, total_pages = search_movies_by_title(movies, search, page_size, int(page))
+    return jsonify({
+            "data": results,
+            "total_pages": total_pages,
+            "page": page
+        }), 200
 
 if __name__=="__main__":
     app.run()
